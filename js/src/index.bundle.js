@@ -1,3 +1,5 @@
+"use string"
+
 import Undernet from "./index"
 
 export default Undernet
