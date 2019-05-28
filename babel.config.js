@@ -1,43 +1,25 @@
-function presets(dist) {
-  if (dist) {
-    return ["@babel/preset-env"]
+let presets = ["@babel/preset-env", "@babel/preset-react"]
+let plugins = [
+  "@babel/plugin-proposal-class-properties",
+  "@babel/plugin-syntax-dynamic-import",
+  "emotion",
+]
+
+module.exports = api => {
+  const test = api.env("test")
+  const dist = api.env("dist")
+
+  if (test) {
+    presets = ["@babel/preset-react", ["@babel/preset-env", { targets: { node: "current" } }]]
+    plugins = [
+      ...plugins,
+      "dynamic-import-node",
+      ["babel-plugin-webpack-aliases", { config: "config/webpack.dev.js" }],
+    ]
+  } else if (dist) {
+    presets = ["@babel/preset-env"]
+    plugins = []
   }
 
-  return [["@babel/preset-env", { useBuiltIns: "entry" }], "@babel/preset-react"]
-}
-
-function plugins(options) {
-  let result = ["@babel/plugin-proposal-class-properties"]
-
-  if (!options.dist) {
-    result.push("@babel/plugin-syntax-dynamic-import", [
-      "babel-plugin-webpack-aliases",
-      { config: "config/webpack.dev.js" },
-    ])
-
-    if (options.test) result.push("dynamic-import-node")
-    if (options.dev || options.prod) result.push("emotion")
-  }
-
-  return result
-}
-
-module.exports = {
-  env: {
-    dist: {
-      presets: presets(true),
-    },
-    development: {
-      presets: presets(),
-      plugins: plugins({ dev: true }),
-    },
-    test: {
-      presets: presets(),
-      plugins: plugins({ test: true }),
-    },
-    production: {
-      presets: presets(),
-      plugins: plugins({ prod: true }),
-    },
-  },
+  return { plugins, presets }
 }

@@ -1,0 +1,214 @@
+// Keyboard focus modifier - only included if $scope is left empty.
+// If $scope is defined, using-keyboard is included via `_scope-overrides.scss`
+
+@if $scope == "" {
+  @include using-keyboard;
+}
+
+// Typography style modifiers
+
+.has-sans-font {
+  font-family: $global-font-sans !important;
+}
+.has-serif-font {
+  font-family: $global-font-serif !important;
+}
+
+@each $property in center, left, right {
+  .has-#{$property}-text {
+    text-align: $property !important;
+  }
+}
+
+.is-bold {
+  font-weight: $global-font-weight-bold !important;
+}
+.is-italic {
+  font-style: $global-font-style-italic !important;
+}
+
+// Color modifier for text and backgrounds
+
+@each $name, $color in $full-palette {
+  .has-#{$name}-text {
+    color: $color !important;
+  }
+  .has-#{$name}-bg {
+    background-color: $color !important;
+  }
+}
+
+// Visibility modifiers by breakpoint
+
+@each $size, $value in $breakpoints {
+  $breakpoint-index: index($breakpoints, ($size $value));
+
+  // If the index is on the first item in $breakpoints
+  @if $breakpoint-index == 1 {
+    .is-flex {
+      display: flex !important;
+    }
+    .is-block {
+      display: block !important;
+    }
+    .is-hidden {
+      display: none !important;
+    }
+  } @else {
+    @include breakpoint-up($size) {
+      @include visibility($size);
+    } // end @include
+  } // end @if
+} // end @each
+
+// `flex-direction` modifiers
+
+@each $property in row, column {
+  .is-flex-#{$property} {
+    flex-direction: $property !important;
+  }
+}
+
+// `justify-content` modifiers
+
+@each $property in center, flex-end, flex-start, space-around, space-between {
+  .is-justified-#{$property} {
+    justify-content: $property !important;
+  }
+}
+
+// `align-items` modifiers
+
+@each $property in center, flex-end, flex-start, stretch {
+  .is-aligned-#{$property} {
+    align-items: $property !important;
+  }
+}
+
+// `align-content` modifiers
+
+@each $property in center, flex-end, flex-start, space-around, space-between, stretch {
+  .has-content-#{$property} {
+    align-content: $property !important;
+  }
+}
+
+// `flex-grow` and `flex-shrink` modifiers
+
+.can-grow {
+  flex-grow: 1 !important;
+}
+.can-shrink {
+  flex-shrink: 1 !important;
+}
+.wont-grow {
+  flex-grow: 0 !important;
+}
+.wont-shrink {
+  flex-shrink: 0 !important;
+}
+
+// Spacing modifier removes from all sides
+
+.has-no-margin {
+  margin: 0 !important;
+}
+.has-no-padding {
+  padding: 0 !important;
+}
+
+// Spacing modifier removes from a single side only
+
+@each $side in left, right, top, bottom {
+  .has-no-padding-#{$side} {
+    padding-#{$side}: 0 !important;
+  }
+  .has-no-margin-#{$side} {
+    margin-#{$side}: 0 !important;
+  }
+}
+
+// Spacing modifiers on all sides
+
+.has-padding {
+  padding: $global-space !important;
+}
+.has-margin {
+  margin: $global-space !important;
+}
+
+// Spacing modifier on a single side only
+
+@each $side in left, right, top, bottom {
+  .has-padding-#{$side} {
+    padding-#{$side}: $global-space !important;
+  }
+  .has-margin-#{$side} {
+    margin-#{$side}: $global-space !important;
+  }
+}
+
+@each $size, $value in $spacing-increments {
+  // Spacing modifier on all sides, for each spacing increment
+  .has-padding-#{$size} {
+    padding: $value !important;
+  }
+  .has-margin-#{$size} {
+    margin: $value !important;
+  }
+
+  // Spacing modifier on single side only, for each spacing increment
+  @each $side in left, right, top, bottom {
+    .has-margin-#{$side}-#{$size} {
+      margin-#{$side}: $value !important;
+    }
+    .has-padding-#{$side}-#{$size} {
+      padding-#{$side}: $value !important;
+    }
+  }
+}
+
+// List style modifier
+
+.is-unstyled-list {
+  list-style-type: none !important;
+  padding-left: 0 !important;
+}
+
+// A11y
+// @link https://gomakethings.com/hidden-content-for-better-a11y/
+
+// Visually hide an element, but leave it available for screen readers
+// @link https://github.com/h5bp/html5-boilerplate/blob/master/dist/css/main.css
+// @link http://snook.ca/archives/html_and_css/hiding-content-for-accessibility
+
+.is-visually-hidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+// Extends the .is-visually-hidden class to allow the element to be focusable when navigated to via the keyboard
+// @link https://github.com/h5bp/html5-boilerplate/blob/master/dist/css/main.css
+// @link https://www.drupal.org/node/897638
+
+.is-visually-hidden-focusable {
+  @extend .is-visually-hidden;
+
+  &:active,
+  &:focus {
+    clip: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    position: static;
+    white-space: normal;
+    width: auto;
+  }
+}

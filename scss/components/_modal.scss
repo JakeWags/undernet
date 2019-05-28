@@ -1,3 +1,10 @@
+// Scroll stopper modifier - only included if $scope is left empty.
+// If $scope is defined, no-scroll is included via `_scope-overrides.scss`
+
+@if $scope == "" {
+  @include no-scroll;
+}
+
 .modal-overlay {
   display: block;
   background: $modal-overlay-color;
@@ -17,7 +24,6 @@
 
   &[data-visible="true"] {
     opacity: 1;
-    cursor: pointer;
     pointer-events: auto;
   }
 
@@ -27,7 +33,7 @@
     justify-content: center;
     flex-flow: row nowrap;
   }
-  
+
   .modal-dialog {
     background: $modal-container-background-color;
     width: $modal-container-width-small;
@@ -47,9 +53,6 @@
     }
 
     header {
-      display: flex;
-      align-items: center;
-
       h1,
       h2,
       h3,
@@ -64,10 +67,12 @@
 
     header > button[data-close],
     header > a[data-close] {
-      margin-left: auto;
       font-size: 32px;
       text-decoration: none;
       padding: 0 8px;
+      position: absolute;
+      right: 8px;
+      top: 2px;
     }
 
     header,
@@ -97,10 +102,4 @@
       }
     }
   }
-}
-
-// stop scrolling on html/body elements
-
-@if $scope == "" {
-  @include no-scroll;
 }

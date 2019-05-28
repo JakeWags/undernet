@@ -8,7 +8,7 @@ const Hashes = require("jshashes")
 
 const distJsFilePath = path.resolve(__dirname, "../dist/undernet.bundle.min.js")
 const distCssFilePath = path.resolve(__dirname, "../dist/undernet.min.css")
-const downloadArticleFilePath = path.resolve(__dirname, "../docs/download.md")
+const downloadArticleFilePath = path.resolve(__dirname, "../site/docs/download.md")
 const readFormat = "utf-8"
 
 // update hashes in docs/download.md
@@ -21,7 +21,7 @@ function createNewHash(str) {
 
 // regex pattern to detect base 64 encoded string.
 // https://stackoverflow.com/a/31245864
-const reb64 = /\"sha256-([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}|[A-Za-z0-9+/]{2})=\"/g
+const reb64 = /"sha256-([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}|[A-Za-z0-9+/]{2})="/g
 
 // retrieve existing hashes
 const b64Strings = downloadArticleFile.match(reb64)
@@ -39,11 +39,11 @@ function getNewIntroductionArticle() {
   return downloadArticleFile.replace(currentJsHash, newJsHash).replace(currentCssHash, newCssHash)
 }
 
-fs.writeFileSync("docs/download.md", getNewIntroductionArticle(), readFormat)
+fs.writeFileSync("site/docs/download.md", getNewIntroductionArticle(), readFormat)
 console.log(`
 #========================================#
 
--> New content hashes created! They're used in docs/download.md.
-   - CSS: ${newCssHash.slice(1, -1)}
-   - JS: ${newJsHash.slice(1, -1)}
+-> New content hashes created! They're used in site/docs/download.md.
+   - CSS: ${newCssHash}
+   - JS: ${newJsHash}
 `)

@@ -18,6 +18,7 @@
 // 6. Modals
 // 7. Accordions
 // 8. Dropdowns
+// 9. Tooltips
 // ------------------
 
 // ******************
@@ -39,9 +40,8 @@ $global-font-weight-bold: bold !default;
 $global-font-style-normal: normal !default;
 $global-font-style-italic: italic !default;
 $global-line-height: 1.5 !default;
-
 $global-ease: cubic-bezier(0.12, 0.72, 0.58, 1.03) !default;
-$global-transition: $global-ease 0.2s !default;
+$global-transition: $global-ease 0.1s !default;
 
 $primary-color: #d15ded !default;
 $secondary-color: #3e46af !default;
@@ -62,7 +62,7 @@ $status-palette: (
   "notice": steelblue
 ) !default;
 
-// used for text and bg color utilities in helpers/_classes.scss
+// Used for text and bg color utilities in helpers/_classes.scss
 $full-palette: map-merge(
   (
     "primary-color": $primary-color,
@@ -94,9 +94,15 @@ $spacing-increments: (
   "4": $global-space * 2
 ) !default;
 
+// Arrow used for dropdowns and tooltips
+$arrow-size: 7px !default;
+
+// z-index values for overlay elements, e.g. dropdowns and modals.
 $modal-index: 2000 !default;
 $dropdown-menu-index: 1999 !default;
-$dropdown-menu-index-in-modal: 2001 !default;
+$dropdown-menu-index-in-modal: 2002 !default;
+$tooltip-index: 1998 !default;
+$tooltip-index-in-modal: 2001 !default;
 
 // 2. Grid
 // -------
@@ -141,7 +147,7 @@ $column-order-classes: true !default;
 // 3. Typography
 // -------------
 
-// NOTE: You can treat these map as css proper, but in `key: value` format.
+// NOTE: You can treat this map as CSS proper, but in `key: value` format.
 // Add more breakpoints from `$breakpoints` to increase font scaling fidelity.
 $type-header-sizes: (
   "xsmall": (
@@ -224,7 +230,7 @@ $type-header-sizes: (
   )
 ) !default;
 
-// NOTE: You can treat these map as css proper, but in `key: value` format.
+// NOTE: You can treat this map as CSS proper, but in `key: value` format.
 $type-header-styles: (
   "h1": (
     "color": $gray200,
@@ -261,11 +267,11 @@ $type-header-styles: (
 $type-header-line-height: 1.3 !default;
 
 $type-p-color: $gray200 !default;
-$type-p-font-size: 16px !default;
+$type-p-font-size: $global-font-size !default;
 $type-p-font-style: normal !default;
 $type-p-font-weight: normal !default;
 $type-p-line-height: $global-line-height !default;
-$type-p-margin-bottom: 16px !default;
+$type-p-margin-bottom: $global-font-size !default;
 
 $type-code-font: $global-monospace !default;
 $type-code-font-size: 1em !default;
@@ -290,18 +296,23 @@ $type-mark-padding: 0 !default;
 $type-mark-color: $gray200 !default;
 $type-mark-background: status(warning) !default;
 
+$underline-text-decoration: underline;
+
+$hr-border: 1px solid $gray900;
+$hr-margin: 2.5rem 0;
+
+$ul-list-style: disc !default;
+$ol-list-style: decimal !default;
 $list-padding: 0 0 $global-space 22px !default;
 $list-margin: 0 !default;
 $list-font: $global-font-sans !default;
 $list-item-margin: 0 !default;
 $list-item-padding: 8px 0 !default;
-$ul-list-style: disc !default;
-$ol-list-style: decimal !default;
 
 // 4. Buttons
 // ----------
 
-// NOTE: You can treat these map as css proper, but in `key: value` format.
+// NOTE: You can treat this map as CSS proper, but in `key: value` format.
 $button-sizes: (
   "small": (
     "padding": 8px 14px,
@@ -309,10 +320,10 @@ $button-sizes: (
   ),
   "medium": (
     "padding": 12px 18px,
-    "font-size": 16px
+    "font-size": $global-font-size
   ),
   "large": (
-    "padding": 16px 22px,
+    "padding": $global-space 22px,
     "font-size": 20px
   ),
   "huge": (
@@ -336,7 +347,7 @@ $button-decoration: none !default;
 
 // Default button styling.
 
-// NOTE: You can treat these map as css proper, but in `key: value` format.
+// NOTE: You can treat this map as CSS proper, but in `key: value` format.
 $button-base: (
   "default": (
     "background": $white,
@@ -356,7 +367,7 @@ $button-base: (
     "text-decoration": none
   ),
   "focus": (
-    "background": $white,
+    "background": lighten($gray900, 10%),
     "color": $gray200,
     "border-color": $gray600,
     "text-decoration": none
@@ -365,7 +376,7 @@ $button-base: (
 
 // Branded & specialized button styling
 
-// NOTE: You can treat this map as css proper, but in `key: value` format.
+// NOTE: You can treat this map as CSS proper, but in `key: value` format.
 $button-types: (
   "primary": (
     "default": (
@@ -384,7 +395,7 @@ $button-types: (
       "border-color": transparent
     ),
     "focus": (
-      "background": $primary-color,
+      "background": darken($primary-color, 2%),
       "color": $white,
       "border-color": transparent
     )
@@ -407,8 +418,8 @@ $button-types: (
     ),
     "focus": (
       "background": transparent,
-      "color": $primary-color,
-      "border-color": $primary-color
+      "color": darken($primary-color, 2%),
+      "border-color": darken($primary-color, 2%)
     )
   ),
   "tertiary": (
@@ -428,7 +439,7 @@ $button-types: (
       "border-color": transparent
     ),
     "focus": (
-      "background": rgba($gray900, 0.2),
+      "background": rgba($gray900, 0.3),
       "color": $primary-color,
       "border-color": transparent
     )
@@ -450,7 +461,7 @@ $button-types: (
       "border-color": transparent
     ),
     "focus": (
-      "background": $white,
+      "background": $gray900,
       "color": $gray200,
       "border-color": transparent
     )
@@ -474,7 +485,7 @@ $button-types: (
     "focus": (
       "background": transparent,
       "color": $white,
-      "border-color": $white
+      "border-color": darken($gray900, 2%)
     )
   ),
   "warning": (
@@ -494,7 +505,7 @@ $button-types: (
       "border-color": transparent
     ),
     "focus": (
-      "background": status(warning),
+      "background": darken(status(warning), 2%),
       "color": $black,
       "border-color": transparent
     )
@@ -516,7 +527,7 @@ $button-types: (
       "border-color": transparent
     ),
     "focus": (
-      "background": status(success),
+      "background": darken(status(success), 2%),
       "color": $white,
       "border-color": transparent
     )
@@ -538,7 +549,7 @@ $button-types: (
       "border-color": transparent
     ),
     "focus": (
-      "background": status(destroy),
+      "background": darken(status(destroy), 2%),
       "color": $white,
       "border-color": transparent
     )
@@ -560,7 +571,7 @@ $button-types: (
       "border-color": transparent
     ),
     "focus": (
-      "background": status(notice),
+      "background": darken(status(notice), 2%),
       "color": $white,
       "border-color": transparent
     )
@@ -621,7 +632,7 @@ $input-disabled-resize: none !default;
 
 // Radio and Checkbox
 
-$input-check-label-padding: 0 0 16px 0 !default;
+$input-check-label-padding: 0 0 $global-space 0 !default;
 $input-check-padding: 0 !default;
 $input-check-margin: 0 12px 0 0 !default;
 
@@ -649,7 +660,7 @@ $fieldset-legend-border-radius: $global-border-radius !default;
 // ---------
 
 $modal-overlay-color: rgba(0, 0, 0, 0.5) !default;
-$modal-transition-duration: 0.5s !default;
+$modal-transition-duration: 0.3s !default;
 $modal-transition-ease: $global-ease !default;
 
 $modal-container-background-color: $white !default;
@@ -658,7 +669,7 @@ $modal-container-padding: $global-space !default;
 $modal-container-width: 450px !default;
 $modal-container-width-small: 95% !default;
 $modal-container-margin: 40px auto !default;
-$modal-container-margin-small: 16px auto !default;
+$modal-container-margin-small: $global-space auto !default;
 
 $modal-header-font-size: 20px !default;
 $modal-header-border: 1px solid $gray900 !default;
@@ -694,16 +705,25 @@ $accordion-content-background: $white !default;
 // 8. Dropdowns
 // ------------
 
+$dropdown-arrows-enabled: true !default;
+$dropdown-border-color: $gray900 !default;
+
 $dropdown-button-arrow: "\25bc" !default;
 $dropdown-button-arrow-padding: 0 0 0 8px !default;
 $dropdown-button-arrow-font-size: 12px !default;
+
+$dropdown-menu-direction-breakpoint: medium !default;
 
 $dropdown-menu-transition: opacity $global-transition !default;
 $dropdown-menu-padding: 8px 0 !default;
 $dropdown-menu-border-radius: $global-border-radius !default;
 $dropdown-menu-background-color: $white !default;
 $dropdown-menu-width: 200px !default;
-$dropdown-menu-border: 1px solid $gray900 !default;
+$dropdown-menu-border: 1px solid $dropdown-border-color !default;
+
+$dropdown-arrow-offset: 12px !default;
+$dropdown-arrow-fill-color: $dropdown-menu-background-color !default;
+$dropdown-arrow-border-color: $dropdown-border-color !default;
 
 $dropdown-menu-button-padding: 8px 12px !default;
 $dropdown-menu-button-text-color: $gray400 !default;
@@ -715,3 +735,19 @@ $dropdown-menu-rule-margin: 8px 0 !default;
 $dropdown-menu-header-font-size: 14px !default;
 $dropdown-menu-header-padding: 12px !default;
 $dropdown-menu-header-color: $gray800 !default;
+
+// 9. Tooltips
+// -----------
+
+$tooltip-arrows-enabled: true !default;
+
+$tooltip-padding: 4px 8px !default;
+$tooltip-margin: 0 0 $arrow-size !default;
+
+$tooltip-transition: opacity $global-transition !default;
+
+$tooltip-font-size: 14px !default;
+$tooltip-border-radius: $global-border-radius !default;
+$tooltip-border: 1px solid $gray100 !default;
+$tooltip-color: $white !default;
+$tooltip-background: $gray100 !default;

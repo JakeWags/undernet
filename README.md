@@ -1,4 +1,4 @@
-![Undernet](src/assets/images/github-logo.png?raw=true)
+![Undernet](site/assets/images/github-logo.png?raw=true)
 
 [![CircleCI](https://circleci.com/gh/geotrev/undernet/tree/master.svg?style=svg)](https://circleci.com/gh/geotrev/undernet/tree/master) [![devDependencies Status](https://david-dm.org/geotrev/undernet/dev-status.svg)](https://david-dm.org/geotrev/undernet?type=dev) [![dependencies Status](https://david-dm.org/geotrev/undernet.svg)](https://david-dm.org/geotrev/undernet) [![npm version](https://badge.fury.io/js/undernet.svg)](https://badge.fury.io/js/undernet) ![Code style](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)
 
@@ -16,7 +16,7 @@ What does Undernet include?
 ## Install via npm or yarn
 
 ```sh
-$ npm install -S undernet
+$ npm install -D undernet
 ```
 
 ```sh
@@ -36,6 +36,7 @@ Currently available list of components:
 - [Modals](https://www.undernet.io/docs/components/modals)
 - [Accordions](https://www.undernet.io/docs/components/accordions)
 - [Dropdowns](https://www.undernet.io/docs/components/dropdowns)
+- [Tooltips](https://www.undernet.io/docs/components/tooltips)
 
 Each require a specific HTML structure to allow for proper accessibility and interactivity for the user. Examples included in the links above.
 
@@ -50,7 +51,7 @@ First fork the project on Github. Then set up locally.
 ```sh
 $ git clone git@github.com:USER_NAME/undernet.git
 $ cd undernet/
-$ npm install && npm link
+$ npm install
 ```
 
 The site is both a demo and marketing tool. It is built with my own webpack setup called [Pulsar](https://github.com/geotrev/pulsar). It's basically just Webpack + React, so don't panic. :)
@@ -61,37 +62,37 @@ The site is both a demo and marketing tool. It is built with my own webpack setu
 $ npm run watch
 ```
 
-### Make a production build
+### Make a production build (mostly for sanity checks)
 
 ```sh
 $ npm run build
 ```
 
-### Run tests with istanbuljs/nyc coverage stats (for the site only)
+### Run Jest tests (for site + framework)
 
 ```sh
-$ npm run test
+$ npm test
 ```
 
-### Load tests on file save (also for the site)
+### Load tests on file save
 
 ```sh
-$ npm run test:w
+$ npm run test:watch
 ```
 
 ### Building the framework
 
 The site itself is a demo of the framework, so you should be able to work on the framework source itself while the site runs in the background.
 
-The build environment works only for macOS at the moment.
+The build environment works in any bash/unix environment. If you're on Windows, that means you'll need [WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10) or an equivalent solution.
 
 If you've already run `npm install`, these commands should Just Work™.
 
 ```sh
-$ npm run build:development
+$ npm run build:dist
 ```
 
-The script processes the SCSS and JS, then compiles the output to a `dist/` folder.
+The script processes the SCSS and JS, then compiles the output to the `dist/` folder.
 
 ### Rebuild assets on the fly
 
@@ -103,16 +104,21 @@ $ npm run js:watch
 
 ### New releases
 
-To run a release build, run the following command, where `VERSION` is the semver value incremented from `package.json`:
+To make a release build for npm, run the following command, where the third keyword should be one of `major`, `minor` or `patch`:
 
 ```sh
-$ npm run update-version -- --tag=VERSION && npm run build:release
+$ npm version (major|minor|patch)
 ```
 
-These will do three things:
+This will do a few things:
 
-1. Increment the project version across docs, package.json, and in `scss/undernet.scss`
-2. Build all assets to `dist/` with the new version.
-3. Generate new sha-256 hashes for CDN subresource integrity (added to `docs/download.md`).
+1. Run the full test suite to ensure the library is stable.
+2. Increment the package by the version you specify, and tag it appropriately
+3. Run a custom node script to update appropriate files with the new version
+4. Rerun the test suite to update snapshots for the build, then build all package assets
+5. Create new content hashes to be used with cdn subresource integrity links in the docs
+6. Add all new build assets to the version commit and open a prompt for the release's commit message
 
-The result is a repo state ready to publish to npm!
+The release commit is usually in this format: `[Version X.X.X] This release does x, y, and z.`
+
+The commit will be ready to merge to master. After that, the repo can be published to npm.
